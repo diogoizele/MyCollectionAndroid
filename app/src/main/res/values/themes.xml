@@ -1,17 +1,34 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.MyCollectionAndroid" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/brand_primary_900</item>
+        <item name="colorPrimaryVariant">@color/brand_primary_600</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorSecondary">@color/brand_primary_900</item>
+        <item name="colorSecondaryVariant">@color/brand_primary_600</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
+
+        <item name="colorTextPrimary">@color/neutral_900</item>
+        <item name="colorTextSecondary">@color/neutral_600</item>
+        <item name="colorBackground">@color/white</item>
+        <item name="colorSurface">@color/neutral_50</item>
+
+        <item name="materialButtonStyle">@style/Widget.MyCollectionAndroid.Button</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">?attr/colorBackground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    </style>
+
+    <style name="Widget.MyCollectionAndroid.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:minHeight">56dp</item>
     </style>
 </resources>
