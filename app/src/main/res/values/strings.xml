@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">My Collection Android</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">MyCollection</string>
+    <string name="title_collections">Coleções</string>
+    <string name="home_welcome_title">Bem-vindo de volta!</string>
+    <string name="home_subtitle">Gerencie suas coleções de livros, filmes e jogos</string>
 </resources>

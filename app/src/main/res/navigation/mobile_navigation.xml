@@ -13,13 +13,8 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.diogo.mycollection.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:name="com.diogo.mycollection.ui.collections.CollectionsFragment"
+        android:label="@string/title_collections"
+        tools:layout="@layout/fragment_collections" />
 
-    <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.diogo.mycollection.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
 </navigation>
