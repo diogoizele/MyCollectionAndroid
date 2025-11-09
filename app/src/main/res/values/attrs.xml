@@ -4,4 +4,11 @@
     <attr name="colorTextSecondary" format="color" />
     <attr name="colorBackground" format="color" />
     <attr name="colorSurface" format="color" />
+
+    <declare-styleable name="CardCategoryCounter">
+        <attr name="icon" format="reference" />
+        <attr name="countText" format="string" />
+        <attr name="labelText" format="string" />
+    </declare-styleable>
 </resources>
+

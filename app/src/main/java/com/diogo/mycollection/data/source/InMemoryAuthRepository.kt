@@ -6,7 +6,7 @@ import kotlinx.coroutines.delay
 
 class InMemoryAuthRepository : AuthRepository {
 
-    private var loggedIn = false
+    private var loggedIn = true
     private var user: User? = null
 
     override suspend fun login(email: String, password: String): Result<User> {
