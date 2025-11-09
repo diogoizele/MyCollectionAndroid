@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">My Collection</string>
-    <string name="title_home">MyCollection</string>
+    <string name="title_home">Início</string>
     <string name="title_collections">Coleções</string>
     <string name="home_welcome_title">Bem-vindo de volta!</string>
     <string name="home_subtitle">Gerencie suas coleções de livros, filmes e jogos</string>
@@ -8,4 +8,7 @@
     <string name="login_password_placeholder">Senha</string>
     <string name="login_button_text">Entrar</string>
     <string name="login_subtitle_text">Gerenciamento de Coleções\nPessoais</string>
+    <string name="books">Livros</string>
+    <string name="movies">Filmes</string>
+    <string name="games">Jogos</string>
 </resources>
