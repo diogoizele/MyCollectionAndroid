@@ -13,4 +13,9 @@
     <string name="games">Jogos</string>
     <string name="search">Pesquisar</string>
     <string name="profile">Perfil</string>
+    <string name="all">Todos</string>
+    <string name="category_book">Livro</string>
+    <string name="category_movie">Filme</string>
+    <string name="category_game">Jogo</string>
+    <string name="category_album">Álbum</string>
 </resources>
