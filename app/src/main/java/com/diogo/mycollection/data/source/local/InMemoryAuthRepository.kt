@@ -1,4 +1,4 @@
-package com.diogo.mycollection.data.source
+package com.diogo.mycollection.data.source.local
 
 import com.diogo.mycollection.data.model.User
 import com.diogo.mycollection.data.repository.AuthRepository
@@ -11,7 +11,7 @@ class InMemoryAuthRepository : AuthRepository {
 
     override suspend fun login(email: String, password: String): Result<User> {
         delay(1000)
-        user = User(email = email)
+        user = User(email = email, name = null)
         loggedIn = true
         return Result.success(user!!)
     }
@@ -21,5 +21,5 @@ class InMemoryAuthRepository : AuthRepository {
         user = null
     }
 
-    override fun isLoggedIn(): Boolean = loggedIn
+    override suspend fun isLoggedIn(): Boolean = loggedIn
 }

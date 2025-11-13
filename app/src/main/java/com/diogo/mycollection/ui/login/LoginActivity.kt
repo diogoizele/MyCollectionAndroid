@@ -17,7 +17,9 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.diogo.mycollection.MainActivity
-import com.diogo.mycollection.data.source.InMemoryAuthRepository
+import com.diogo.mycollection.data.source.local.DatabaseProvider
+import com.diogo.mycollection.data.source.local.InMemoryAuthRepository
+import com.diogo.mycollection.data.source.local.RoomAuthRepository
 import com.diogo.mycollection.databinding.ActivityLoginBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -25,14 +27,7 @@ import kotlinx.coroutines.launch
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private val viewModel: LoginViewModel by viewModels {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val repository = InMemoryAuthRepository()
-                return LoginViewModel(repository) as T
-            }
-        }
-    }
+    private lateinit var viewModel: LoginViewModel
 
     companion object {
         fun createIntent(context: Context): Intent {
@@ -45,6 +40,8 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel = LoginViewModel(RoomAuthRepository(DatabaseProvider.getDatabase(this)))
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 

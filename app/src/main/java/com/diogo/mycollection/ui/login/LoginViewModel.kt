@@ -27,7 +27,5 @@ class LoginViewModel(
             else LoginUiState.Error("Erro ao autenticar")
         }
     }
-
-    fun isLoggedIn(): Boolean = authRepository.isLoggedIn()
 }
 
