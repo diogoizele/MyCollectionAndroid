@@ -23,6 +23,7 @@ class ToolbarController(
                         back = false,
                         navigationIcon = R.drawable.ic_layer_group_solid_full
                     )
+                    toolbar.touchables.forEach { it.isClickable = false } // Desabilita o efeito de ripple
                 }
                 else -> {
                     update(
