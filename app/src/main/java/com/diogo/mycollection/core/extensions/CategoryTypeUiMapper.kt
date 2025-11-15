@@ -1,4 +1,4 @@
-package com.diogo.mycollection.ui.extensions
+package com.diogo.mycollection.core.extensions
 
 import com.diogo.mycollection.R
 import android.content.Context

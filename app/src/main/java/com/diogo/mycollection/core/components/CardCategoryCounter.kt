@@ -1,4 +1,4 @@
-package com.diogo.mycollection.ui.components
+package com.diogo.mycollection.core.components
 
 import android.content.Context
 import android.util.AttributeSet
@@ -14,7 +14,7 @@ class CardCategoryCounter @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet,
     defStyleAttr: Int = 0
-) : LinearLayout (context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr) {
 
     private val binding = ViewCardCategoryCounterBinding.inflate(
         LayoutInflater.from(context), this, true

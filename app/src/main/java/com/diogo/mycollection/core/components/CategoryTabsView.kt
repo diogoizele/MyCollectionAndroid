@@ -1,4 +1,4 @@
-package com.diogo.mycollection.ui.components
+package com.diogo.mycollection.core.components
 
 import android.content.Context
 import android.util.AttributeSet
