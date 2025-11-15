@@ -13,15 +13,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.diogo.mycollection.databinding.ActivityMainBinding
-import com.diogo.mycollection.ui.common.ToolbarController
-import com.diogo.mycollection.ui.common.ToolbarMenuHandler
 
-class MainActivity : AppCompatActivity(), ToolbarMenuHandler {
+
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var toolbarController: ToolbarController
-
-    override var currentMenuRes: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +39,17 @@ class MainActivity : AppCompatActivity(), ToolbarMenuHandler {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-
-        toolbarController = ToolbarController(this, binding.toolbar, navController)
-        toolbarController.setup()
-
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.navigation_home) {
+                supportActionBar?.setDisplayShowHomeEnabled(true)
+                supportActionBar?.setLogo(R.drawable.logo_padded)
+                supportActionBar?.title = getString(R.string.app_name)
+            } else {
+                supportActionBar?.setDisplayShowHomeEnabled(false)
+                supportActionBar?.setLogo(null)
+                supportActionBar?.title = destination.label
+            }
+        }
 
         disableHardwareBackButton()
     }
@@ -54,25 +57,6 @@ class MainActivity : AppCompatActivity(), ToolbarMenuHandler {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         return navController.navigateUp() || super.onSupportNavigateUp()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        currentMenuRes?.let { menuInflater.inflate(it, menu) }
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_search -> {
-                // Ação botão de busca
-                true
-            }
-            R.id.action_profile -> {
-                // Ação botão de perfil
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     private fun disableHardwareBackButton() {
