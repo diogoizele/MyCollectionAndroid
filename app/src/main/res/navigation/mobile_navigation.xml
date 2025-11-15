@@ -17,4 +17,16 @@
         android:label="@string/title_collections"
         tools:layout="@layout/fragment_collections" />
 
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.diogo.mycollection.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_create_collection"
+        android:name="com.diogo.mycollection.ui.createcollection.CreateCollectionFragment"
+        android:label="@string/title_create_collection"
+        tools:layout="@layout/fragment_create_collection"/>
+
 </navigation>
