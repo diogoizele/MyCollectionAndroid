@@ -7,9 +7,9 @@ import java.util.UUID
 fun CollectionItemEntity.toDomain() = CollectionItem(
     id = UUID.fromString(id),
     title = title,
-    author = author ?: "",
+    author = author,
     type = type,
-    rating = rating ?: 0.0,
+    rating = rating,
     imageUrl = imageUrl,
     description = description
 )

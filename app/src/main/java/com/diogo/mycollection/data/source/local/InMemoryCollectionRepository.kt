@@ -3,6 +3,8 @@ package com.diogo.mycollection.data.source.local
 import com.diogo.mycollection.data.model.CategoryType
 import com.diogo.mycollection.data.model.CollectionItem
 import com.diogo.mycollection.data.repository.CollectionRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 class InMemoryCollectionRepository : CollectionRepository {
 
@@ -30,5 +32,10 @@ class InMemoryCollectionRepository : CollectionRepository {
 
     override suspend fun deleteCollectionItem(item: CollectionItem) {
         collectionItems.remove(item)
+    }
+
+
+    override fun observeCollectionItems(category: CategoryType?): Flow<List<CollectionItem>> {
+        return flowOf(collectionItems)
     }
 }

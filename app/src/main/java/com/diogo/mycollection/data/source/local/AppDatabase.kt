@@ -9,7 +9,7 @@ import com.diogo.mycollection.data.source.local.entity.UserEntity
 
 @Database(
     entities = [CollectionItemEntity::class, UserEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

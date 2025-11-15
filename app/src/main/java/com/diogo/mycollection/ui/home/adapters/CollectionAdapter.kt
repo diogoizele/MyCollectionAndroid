@@ -8,7 +8,7 @@ import coil.load
 import com.diogo.mycollection.R
 import com.diogo.mycollection.data.model.CollectionItem
 import com.diogo.mycollection.databinding.ItemCollectionHomeBinding
-import com.diogo.mycollection.ui.extensions.toDisplayName
+import com.diogo.mycollection.core.extensions.toDisplayName
 
 class CollectionAdapter(
     private val items: List<CollectionItem>,

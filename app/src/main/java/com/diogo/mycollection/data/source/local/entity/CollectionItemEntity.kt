@@ -1,5 +1,6 @@
 package com.diogo.mycollection.data.source.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.diogo.mycollection.data.model.CategoryType
@@ -13,5 +14,7 @@ data class CollectionItemEntity (
     val description: String?,
     val imageUrl: String?,
     val type: CategoryType,
-    val rating: Double
+    val rating: Double,
+    @ColumnInfo(name = "created_at")
+    val createdAt: Long = System.currentTimeMillis()
 )
