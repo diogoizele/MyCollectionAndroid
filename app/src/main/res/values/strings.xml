@@ -2,6 +2,7 @@
     <string name="app_name">My Collection</string>
     <string name="title_home">Início</string>
     <string name="title_collections">Coleções</string>
+    <string name="title_profile">Perfil</string>
     <string name="home_welcome_title">Bem-vindo de volta!</string>
     <string name="home_subtitle">Gerencie suas coleções de livros, filmes e jogos</string>
     <string name="login_email_placeholder">E-mail</string>
@@ -18,4 +19,7 @@
     <string name="category_movie">Filme</string>
     <string name="category_game">Jogo</string>
     <string name="category_album">Álbum</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_create_collection">Nova coleção</string>
 </resources>
