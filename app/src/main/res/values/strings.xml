@@ -19,7 +19,22 @@
     <string name="category_movie">Filme</string>
     <string name="category_game">Jogo</string>
     <string name="category_album">Álbum</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_create_collection">Nova coleção</string>
+    <string name="title_create_collection">Adicionar Item</string>
+    <string name="label_image_text">Imagem</string>
+    <string name="image_picker_call_to_action">Toque para adicionar uma imagem</string>
+    <string name="image_picker_auxiliar_text">ou insira uma URL abaixo</string>
+    <string name="label_image_url">URL da Imagem (opcional)</string>
+    <string name="placeholder_image_url">https://exemplo.com/imagem.jpeg</string>
+    <string name="label_title">Título *</string>
+    <string name="placeholder_title">Digite o título do item</string>
+    <string name="label_category">Categoria *</string>
+    <string name="placeholder_category">Selecione uma categoria</string>
+    <string name="label_author">Autor</string>
+    <string name="placeholder_author">Nome do criador</string>
+    <string name="label_description">Descrição</string>
+    <string name="placeholder_description">Adicione uma descrição, suas impressões ou comentários sobre o item...</string>
+    <string name="label_rating">Avaliação</string>
+    <string name="placeholder_rating">Toque nas estrelas para avaliar</string>
+    <string name="add_item_btn_text">Adicionar à Coleção</string>
 </resources>
