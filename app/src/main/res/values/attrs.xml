@@ -4,11 +4,25 @@
     <attr name="colorTextSecondary" format="color" />
     <attr name="colorBackground" format="color" />
     <attr name="colorSurface" format="color" />
+    <attr name="labelText" format="string"/>
 
     <declare-styleable name="CardCategoryCounter">
         <attr name="icon" format="reference" />
         <attr name="countText" format="string" />
-        <attr name="labelText" format="string" />
+        <attr name="labelText" />
+    </declare-styleable>
+
+    <declare-styleable name="LabeledEditText">
+        <attr name="labelText" />
+        <attr name="placeholderText" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="StarRatingView">
+        <attr name="starSize" format="dimension"/>
+        <attr name="starSpacing" format="dimension"/>
+        <attr name="maxRating" format="integer"/>
+        <attr name="step" format="float"/>
+        <attr name="initialRating" format="float"/>
     </declare-styleable>
 </resources>
 

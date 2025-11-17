@@ -1,14 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="24dp"
     tools:context=".ui.createcollection.CreateCollectionFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/labelImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:text="@string/label_image_text"
+        android:textStyle="bold"
+        android:textColor="?attr/colorTextPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
 
-</FrameLayout>
+    <com.diogo.mycollection.core.components.ImagePickerView
+        android:id="@+id/imagePicker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/labelImage"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        tools:layout="@layout/image_picker_view"
+        />
+
+    <com.diogo.mycollection.core.components.LabeledEditText
+        android:id="@+id/textFieldUrlImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelText="@string/label_image_url"
+        app:placeholderText="@string/placeholder_image_url"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/imagePicker"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <com.diogo.mycollection.core.components.LabeledEditText
+        android:id="@+id/textFieldTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelText="@string/label_title"
+        app:placeholderText="@string/placeholder_title"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/textFieldUrlImage"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/labelSelectorCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_category"
+        android:textStyle="bold"
+        android:textColor="?attr/colorTextPrimary"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/textFieldTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textFieldSelectorCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/labelSelectorCategory"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        >
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/dropdownSelectorCategory"
+            android:layout_width="match_parent"
+            android:textSize="18sp"
+            android:layout_height="56dp"
+            android:inputType="none"
+            android:background="@drawable/bg_edit_text"
+            android:padding="12dp"
+            android:hint="@string/placeholder_category"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.diogo.mycollection.core.components.LabeledEditText
+        android:id="@+id/textFieldAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/textFieldSelectorCategory"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:labelText="@string/label_author"
+        app:placeholderText="@string/placeholder_author"
+        />
+
+        <TextView
+            android:id="@+id/labelRating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_rating"
+            android:textStyle="bold"
+            android:textColor="?attr/colorTextPrimary"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/textFieldAuthor"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <com.diogo.mycollection.core.components.StarRatingView
+            android:id="@+id/ratingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:starSize="24dp"
+            app:starSpacing="8dp"
+            app:maxRating="5"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/labelRating"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:step="0.1"
+            app:initialRating="4.5"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/ratingView"
+            app:layout_constraintTop_toTopOf="@id/ratingView"
+            app:layout_constraintBottom_toBottomOf="@id/ratingView"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/placeholder_rating"
+            android:layout_marginStart="8dp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorTextSecondary"
+            android:singleLine="false"
+            android:maxLines="999"
+            android:ellipsize="none"
+            />
+
+        <TextView
+            android:id="@+id/labelDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="2dp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/ratingView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="@string/label_description"
+        />
+
+    <EditText
+        android:id="@+id/textFieldDescription"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:autofillHints="name"
+        android:background="@drawable/bg_edit_text"
+        android:padding="12dp"
+        android:textColor="?attr/colorTextSecondary"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/labelDescription"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:hint="@string/placeholder_description"
+        android:gravity="top|start"
+        android:inputType="textMultiLine"
+        android:singleLine="false"
+        />
+
+    <Button
+        android:id="@+id/addItemButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_item_btn_text"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/bg_rounded"
+        app:layout_constraintTop_toBottomOf="@id/textFieldDescription"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        app:layout_constraintTop_toBottomOf="@id/textFieldDescription"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
