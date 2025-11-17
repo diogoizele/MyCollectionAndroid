@@ -17,6 +17,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.diogo.mycollection.MainActivity
+import com.diogo.mycollection.core.extensions.applyKeyboardInsets
 import com.diogo.mycollection.data.source.local.DatabaseProvider
 import com.diogo.mycollection.data.source.local.InMemoryAuthRepository
 import com.diogo.mycollection.data.source.local.RoomAuthRepository
@@ -45,16 +46,7 @@ class LoginActivity : AppCompatActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
-            val navBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-            view.updatePadding(
-                bottom = maxOf(ime.bottom, navBars.bottom)
-            )
-
-            insets
-        }
+        window.applyKeyboardInsets(binding.root)
 
         supportActionBar?.hide()
 
