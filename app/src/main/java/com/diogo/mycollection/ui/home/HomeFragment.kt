@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.diogo.mycollection.R
 import com.diogo.mycollection.data.model.CategoryType
 import com.diogo.mycollection.data.model.CollectionItem
+import com.diogo.mycollection.data.model.ImageSource
 import com.diogo.mycollection.data.source.local.DatabaseProvider
 import com.diogo.mycollection.data.source.local.RoomCollectionRepository
 import com.diogo.mycollection.databinding.FragmentHomeBinding
@@ -40,29 +41,32 @@ class HomeFragment : Fragment() {
             "O Senhor dos Anéis - A Sociedade do Anel",
             "J.R.R. Tolkien",
             CategoryType.BOOK,
-            4.9,
-            "https://m.media-amazon.com/images/I/81MZ8OjmQrL._AC_UF1000,1000_QL80_.jpg"
+            4.9f,
+            ImageSource.Remote("https://m.media-amazon.com/images/I/81MZ8OjmQrL._AC_UF1000,1000_QL80_.jpg")
         ),
         CollectionItem(
             UUID.randomUUID(),
             "The Witcher 3",
             "CD Projekt Red",
             CategoryType.GAME,
-            4.7
+            4.7f,
+            ImageSource.None
         ),
         CollectionItem(
             UUID.randomUUID(),
             "Interestelar",
             "Christopher Nolan",
             CategoryType.MOVIE,
-            4.8
+            4.8f,
+            ImageSource.None
         ),
         CollectionItem(
             UUID.randomUUID(),
             "Dark Side of the Moon",
             "Pink Floyd",
             CategoryType.ALBUM,
-            4.9
+            4.9f,
+            ImageSource.None
         )
     )
 

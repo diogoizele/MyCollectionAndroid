@@ -21,7 +21,7 @@ class HomeViewModel(
 
 
     val uiState: StateFlow<HomeUiState> = combine(
-        collectionRepository.observeCollectionItems(selectedCategory.value),
+        collectionRepository.observeAll(selectedCategory.value),
         selectedCategory
     ) { items, category ->
         val filtered = category?.let { cat ->

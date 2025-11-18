@@ -40,4 +40,9 @@ class ImagePickerView @JvmOverloads constructor(
             .transform(BlurTransformation(20, 3))
             .into(binding.backgroundBlur)
     }
+
+    fun showPlaceholder() {
+        binding.emptyState.visibility = VISIBLE
+        binding.imageState.visibility = GONE
+    }
 }

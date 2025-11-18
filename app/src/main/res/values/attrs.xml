@@ -15,6 +15,7 @@
     <declare-styleable name="LabeledEditText">
         <attr name="labelText" />
         <attr name="placeholderText" format="string"/>
+        <attr name="iconEnd" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="StarRatingView">

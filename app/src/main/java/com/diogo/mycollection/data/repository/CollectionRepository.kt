@@ -6,14 +6,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface CollectionRepository {
 
-    suspend fun getCollectionItems(category: CategoryType?): List<CollectionItem>
+    suspend fun getAll(category: CategoryType?): List<CollectionItem>
 
-    fun observeCollectionItems(category: CategoryType?): Flow<List<CollectionItem>>
+    fun observeAll(category: CategoryType?): Flow<List<CollectionItem>>
 
-    suspend fun addCollectionItem(item: CollectionItem)
+    suspend fun save(item: CollectionItem)
 
-    suspend fun updateCollectionItem(item: CollectionItem)
+    suspend fun update(item: CollectionItem)
 
-    suspend fun deleteCollectionItem(item: CollectionItem)
+    suspend fun delete(item: CollectionItem)
 
 }

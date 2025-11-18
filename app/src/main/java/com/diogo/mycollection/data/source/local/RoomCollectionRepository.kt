@@ -15,7 +15,7 @@ class RoomCollectionRepository(
 
     private val dao = db.collectionItemDao()
 
-    override suspend fun getCollectionItems(category: CategoryType?): List<CollectionItem> {
+    override suspend fun getAll(category: CategoryType?): List<CollectionItem> {
         val entities = if (category == null)
             dao.getAll()
         else
@@ -24,19 +24,19 @@ class RoomCollectionRepository(
         return entities.map {  it.toDomain() }
     }
 
-    override suspend fun addCollectionItem(item: CollectionItem) {
+    override suspend fun save(item: CollectionItem) {
         dao.insert(item.toEntity())
     }
 
-    override suspend fun updateCollectionItem(item: CollectionItem) {
+    override suspend fun update(item: CollectionItem) {
         dao.update(item.toEntity())
     }
 
-    override suspend fun deleteCollectionItem(item: CollectionItem) {
+    override suspend fun delete(item: CollectionItem) {
         dao.delete(item.toEntity())
     }
 
-    override fun observeCollectionItems(category: CategoryType?): Flow<List<CollectionItem>> {
+    override fun observeAll(category: CategoryType?): Flow<List<CollectionItem>> {
         return dao.observeAll().map { entities -> entities.map { it.toDomain() } }
     }
 }

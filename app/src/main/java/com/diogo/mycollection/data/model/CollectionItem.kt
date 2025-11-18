@@ -7,7 +7,7 @@ data class CollectionItem(
     val title: String,
     val author: String,
     val type: CategoryType,
-    val rating: Double,
-    val imageUrl: String? = null,
+    val rating: Float,
+    val image: ImageSource,
     val description: String? = null,
 )

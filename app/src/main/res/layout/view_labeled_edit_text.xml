@@ -24,6 +24,23 @@
         android:background="@drawable/bg_edit_text"
         android:padding="12dp"
         tools:hint="Placeholder"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+        android:overScrollMode="never"
         android:textColor="?attr/colorTextSecondary"
         />
+
+
+    <TextView
+        android:id="@+id/errorText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/error"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="2dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Este campo é obrigatório"/>
 </LinearLayout>

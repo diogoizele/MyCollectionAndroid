@@ -10,7 +10,7 @@ class InMemoryCollectionRepository : CollectionRepository {
 
     private val collectionItems = mutableListOf<CollectionItem>()
 
-    override suspend fun getCollectionItems(category: CategoryType?): List<CollectionItem> {
+    override suspend fun getAll(category: CategoryType?): List<CollectionItem> {
         return if (category == null) {
             collectionItems
         } else {
@@ -18,11 +18,11 @@ class InMemoryCollectionRepository : CollectionRepository {
         }
     }
 
-    override suspend fun addCollectionItem(item: CollectionItem) {
+    override suspend fun save(item: CollectionItem) {
         collectionItems.add(item)
     }
 
-    override suspend fun updateCollectionItem(item: CollectionItem) {
+    override suspend fun update(item: CollectionItem) {
         val index = collectionItems.indexOfFirst { it.id == item.id }
 
         if (index != -1) {
@@ -30,12 +30,12 @@ class InMemoryCollectionRepository : CollectionRepository {
         }
     }
 
-    override suspend fun deleteCollectionItem(item: CollectionItem) {
+    override suspend fun delete(item: CollectionItem) {
         collectionItems.remove(item)
     }
 
 
-    override fun observeCollectionItems(category: CategoryType?): Flow<List<CollectionItem>> {
+    override fun observeAll(category: CategoryType?): Flow<List<CollectionItem>> {
         return flowOf(collectionItems)
     }
 }

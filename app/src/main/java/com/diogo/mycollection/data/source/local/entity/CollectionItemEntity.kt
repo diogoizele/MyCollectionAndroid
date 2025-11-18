@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.diogo.mycollection.data.model.CategoryType
+import com.diogo.mycollection.data.model.ImageSourceType
 import java.util.UUID
 
 @Entity(tableName = "collection_items")
@@ -12,9 +13,9 @@ data class CollectionItemEntity (
     val title: String,
     val author: String,
     val description: String?,
-    val imageUrl: String?,
+    @ColumnInfo(name = "image_type") val imageType: ImageSourceType,
+    @ColumnInfo(name = "image_value") val imageValue: String?,
     val type: CategoryType,
-    val rating: Double,
-    @ColumnInfo(name = "created_at")
-    val createdAt: Long = System.currentTimeMillis()
+    val rating: Float,
+    @ColumnInfo(name = "created_at")  val createdAt: Long = System.currentTimeMillis()
 )
