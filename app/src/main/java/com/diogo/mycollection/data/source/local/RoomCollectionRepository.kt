@@ -3,6 +3,7 @@ package com.diogo.mycollection.data.source.local
 import com.diogo.mycollection.data.model.CategoryType
 import com.diogo.mycollection.data.model.CollectionItem
 import com.diogo.mycollection.data.repository.CollectionRepository
+import com.diogo.mycollection.data.source.local.dao.CollectionItemDao
 
 import com.diogo.mycollection.data.source.local.mapper.toDomain
 import com.diogo.mycollection.data.source.local.mapper.toEntity
@@ -10,10 +11,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class RoomCollectionRepository(
-    db: AppDatabase
+    private val dao: CollectionItemDao
 ) : CollectionRepository {
-
-    private val dao = db.collectionItemDao()
 
     override suspend fun getAll(category: CategoryType?): List<CollectionItem> {
         val entities = if (category == null)

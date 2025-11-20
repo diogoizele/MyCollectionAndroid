@@ -2,13 +2,12 @@ package com.diogo.mycollection.data.source.local
 
 import com.diogo.mycollection.data.model.User
 import com.diogo.mycollection.data.repository.AuthRepository
+import com.diogo.mycollection.data.source.local.dao.UserDao
 import com.diogo.mycollection.data.source.local.entity.UserEntity
 
 class RoomAuthRepository(
-    db: AppDatabase
+    private val userDao: UserDao
 ) : AuthRepository {
-
-    private val userDao = db.userDao()
 
     override suspend fun login(
         email: String,

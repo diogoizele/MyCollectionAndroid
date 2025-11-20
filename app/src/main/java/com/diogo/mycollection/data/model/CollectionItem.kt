@@ -5,9 +5,9 @@ import java.util.UUID
 data class CollectionItem(
     val id: UUID,
     val title: String,
-    val author: String,
+    val author: String?,
     val type: CategoryType,
-    val rating: Float,
-    val image: ImageSource,
+    val rating: Float?,
+    val imageUrl: String?,
     val description: String? = null,
 )

@@ -26,7 +26,7 @@ class StarRatingView @JvmOverloads constructor(
     private var starSpacingPx = dpToPx(8f).toInt()
     private var maxRating = 5
     private var step = 0.1f
-    private var rating = 1.0f
+    private var rating = DEFAULT_VALUE
 
     private val starBounds = Rect()
 
@@ -39,7 +39,7 @@ class StarRatingView @JvmOverloads constructor(
             starSpacingPx = a.getDimensionPixelSize(R.styleable.StarRatingView_starSpacing, starSpacingPx)
             maxRating = a.getInt(R.styleable.StarRatingView_maxRating, maxRating)
             step = a.getFloat(R.styleable.StarRatingView_step, step)
-            rating = a.getFloat(R.styleable.StarRatingView_initialRating, rating)
+            rating = a.getFloat(R.styleable.StarRatingView_initialRating, DEFAULT_VALUE)
             a.recycle()
         }
         // tint: empty gray, filled yellow
@@ -140,4 +140,8 @@ class StarRatingView @JvmOverloads constructor(
     }
 
     private fun dpToPx(dp: Float): Float = dp * context.resources.displayMetrics.density
+
+    companion object {
+        const val DEFAULT_VALUE = 3.5f
+    }
 }

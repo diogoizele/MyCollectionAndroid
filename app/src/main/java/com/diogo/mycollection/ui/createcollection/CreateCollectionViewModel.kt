@@ -11,6 +11,7 @@ import com.diogo.mycollection.data.model.CollectionItem
 import com.diogo.mycollection.data.model.ImageSource
 import com.diogo.mycollection.data.repository.CollectionRepository
 import com.diogo.mycollection.data.repository.ImageRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,9 +23,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
+import javax.inject.Inject
 
 @OptIn(FlowPreview::class)
-class CreateCollectionViewModel(
+@HiltViewModel
+class CreateCollectionViewModel @Inject constructor(
     private val repository: CollectionRepository,
     private val imageRepository: ImageRepository
 ) : ViewModel() {
@@ -151,15 +154,24 @@ class CreateCollectionViewModel(
         }
     }
 
-    private fun toDomain(state: CreateCollectionUiState): CollectionItem = CollectionItem(
-        id = UUID.randomUUID(),
-        title = state.title,
-        author = state.author,
-        description = state.description,
-        image = state.image,
-        type = state.categoryType!!,
-        rating = state.rating
-    )
+    private fun toDomain(state: CreateCollectionUiState): CollectionItem {
+        val source = when(state.image) {
+            is ImageSource.Local -> state.image.path
+            is ImageSource.Remote -> state.image.url
+            else -> null
+        }
+        // TODO: Converter pra base64
+
+        return CollectionItem(
+            id = UUID.randomUUID(),
+            title = state.title,
+            author = state.author,
+            description = state.description,
+            imageUrl = source,
+            type = state.categoryType!!,
+            rating = state.rating
+        )
+    }
 
     private fun validateImageUrl(url: String): Boolean {
         if (url.isBlank()) return false

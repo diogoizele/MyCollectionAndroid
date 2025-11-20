@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -17,66 +18,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.diogo.mycollection.R
 import com.diogo.mycollection.data.model.CategoryType
 import com.diogo.mycollection.data.model.CollectionItem
-import com.diogo.mycollection.data.model.ImageSource
-import com.diogo.mycollection.data.source.local.DatabaseProvider
-import com.diogo.mycollection.data.source.local.RoomCollectionRepository
 import com.diogo.mycollection.databinding.FragmentHomeBinding
 import com.diogo.mycollection.ui.home.adapters.CollectionAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.util.UUID
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by viewModels ()
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var collectionAdapter: CollectionAdapter
 
-
-    private fun mockCollections() = listOf(
-        CollectionItem(
-            UUID.randomUUID(),
-            "O Senhor dos Anéis - A Sociedade do Anel",
-            "J.R.R. Tolkien",
-            CategoryType.BOOK,
-            4.9f,
-            ImageSource.Remote("https://m.media-amazon.com/images/I/81MZ8OjmQrL._AC_UF1000,1000_QL80_.jpg")
-        ),
-        CollectionItem(
-            UUID.randomUUID(),
-            "The Witcher 3",
-            "CD Projekt Red",
-            CategoryType.GAME,
-            4.7f,
-            ImageSource.None
-        ),
-        CollectionItem(
-            UUID.randomUUID(),
-            "Interestelar",
-            "Christopher Nolan",
-            CategoryType.MOVIE,
-            4.8f,
-            ImageSource.None
-        ),
-        CollectionItem(
-            UUID.randomUUID(),
-            "Dark Side of the Moon",
-            "Pink Floyd",
-            CategoryType.ALBUM,
-            4.9f,
-            ImageSource.None
-        )
-    )
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = HomeViewModel(RoomCollectionRepository(DatabaseProvider.getDatabase(requireContext())))
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -93,7 +54,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupListeners()
-        setupRecyclerCollectionView()
         setupMenuProvider()
         observeUiState()
     }
@@ -108,8 +68,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setupRecyclerCollectionView() {
-        val collections = mockCollections()
+    private fun setupRecyclerCollectionView(collections: List<CollectionItem>) {
 
         collectionAdapter = CollectionAdapter(
             items = collections,
@@ -166,8 +125,11 @@ class HomeFragment : Fragment() {
         println("Loading chamado as ${System.currentTimeMillis()}")
     }
     private fun showItems(items: List<CollectionItem>) {
-        println("Items chamados as ${System.currentTimeMillis()}")
+        setCategoryCounters(items)
+        setupRecyclerCollectionView(items)
+        println("Items chamados as $items")
     }
+
 
     private fun showError(message: String) {
         println("Error chamado as ${System.currentTimeMillis()}")
@@ -177,4 +139,22 @@ class HomeFragment : Fragment() {
         println("Empty chamado as ${System.currentTimeMillis()}")
     }
 
+    private fun setCategoryCounters(items: List<CollectionItem>) {
+        var booksQuantity = 0
+        var moviesQuantity = 0
+        var gamesQuantity = 0
+
+        items.forEach { item ->
+            when(item.type) {
+                CategoryType.BOOK -> booksQuantity++
+                CategoryType.MOVIE -> moviesQuantity++
+                CategoryType.GAME -> gamesQuantity++
+                else -> {}
+            }
+        }
+
+        binding.counterBooks.setCountText(booksQuantity.toString())
+        binding.counterMovies.setCountText(moviesQuantity.toString())
+        binding.counterGames.setCountText(gamesQuantity.toString())
+    }
 }

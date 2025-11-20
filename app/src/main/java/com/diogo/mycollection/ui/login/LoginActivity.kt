@@ -7,28 +7,22 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.activity.viewModels
-import androidx.core.view.ViewCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import com.diogo.mycollection.MainActivity
 import com.diogo.mycollection.core.extensions.applyKeyboardInsets
-import com.diogo.mycollection.data.source.local.DatabaseProvider
-import com.diogo.mycollection.data.source.local.InMemoryAuthRepository
-import com.diogo.mycollection.data.source.local.RoomAuthRepository
 import com.diogo.mycollection.databinding.ActivityLoginBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var viewModel: LoginViewModel
+    private val viewModel: LoginViewModel by viewModels()
 
     companion object {
         fun createIntent(context: Context): Intent {
@@ -41,8 +35,6 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = LoginViewModel(RoomAuthRepository(DatabaseProvider.getDatabase(this)))
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 

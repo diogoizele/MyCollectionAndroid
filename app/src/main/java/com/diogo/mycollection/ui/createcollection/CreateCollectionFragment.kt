@@ -22,6 +22,7 @@ import com.diogo.mycollection.data.source.local.InMemoryCollectionRepository
 import com.diogo.mycollection.databinding.FragmentCreateCollectionBinding
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -30,11 +31,13 @@ import com.diogo.mycollection.core.components.LabeledEditText
 import com.diogo.mycollection.core.network.RemoteImageValidator
 import com.diogo.mycollection.data.source.local.InMemoryImageRepository
 import com.google.android.material.textfield.TextInputLayout
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class CreateCollectionFragment : Fragment() {
 
-    private lateinit var viewModel: CreateCollectionViewModel
+    private val viewModel: CreateCollectionViewModel by viewModels()
 
 
     private var _binding: FragmentCreateCollectionBinding? = null
@@ -69,11 +72,6 @@ class CreateCollectionFragment : Fragment() {
     ): View? {
 
         _binding = FragmentCreateCollectionBinding.inflate(inflater, container, false)
-
-        viewModel = CreateCollectionViewModel(
-            repository = InMemoryCollectionRepository(),
-            imageRepository = InMemoryImageRepository(requireContext())
-        )
 
         val root = binding.root
 

@@ -7,19 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.diogo.mycollection.data.source.local.DatabaseProvider
 import com.diogo.mycollection.data.source.local.RoomAuthRepository
 import com.diogo.mycollection.databinding.FragmentProfileBinding
 import com.diogo.mycollection.ui.login.LoginActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
-    private lateinit var viewModel: ProfileViewModel
-
+    private val viewModel: ProfileViewModel by viewModels()
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
@@ -28,7 +29,6 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ProfileViewModel(RoomAuthRepository(DatabaseProvider.getDatabase(requireContext())))
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root

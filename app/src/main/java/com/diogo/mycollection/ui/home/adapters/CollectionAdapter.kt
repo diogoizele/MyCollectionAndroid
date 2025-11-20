@@ -9,7 +9,6 @@ import com.diogo.mycollection.R
 import com.diogo.mycollection.data.model.CollectionItem
 import com.diogo.mycollection.databinding.ItemCollectionHomeBinding
 import com.diogo.mycollection.core.extensions.toDisplayName
-import com.diogo.mycollection.core.extensions.toLoadable
 
 class CollectionAdapter(
     private val items: List<CollectionItem>,
@@ -43,13 +42,11 @@ class CollectionAdapter(
             itemTag.text = item.type.toDisplayName(root.context)
             itemRating.text = item.rating.toString()
 
-            val loadable = item.image.toLoadable(root.context)
-
-            if (loadable != null) {
+            if (item.imageUrl != null) {
                 itemImage.visibility = View.VISIBLE
                 itemPlaceholderText.visibility = View.GONE
 
-                itemImage.load(loadable) {
+                itemImage.load(item.imageUrl) {
                     crossfade(true)
                     placeholder(R.drawable.bg_image_placeholder)
                     error(R.drawable.bg_image_placeholder)
