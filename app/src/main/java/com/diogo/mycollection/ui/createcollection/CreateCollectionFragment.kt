@@ -1,6 +1,8 @@
 package com.diogo.mycollection.ui.createcollection
 
 import android.app.Activity
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -23,7 +25,13 @@ import com.diogo.mycollection.core.components.LabeledEditText
 import com.diogo.mycollection.data.repository.ImageRepository
 import com.diogo.mycollection.data.source.local.InMemoryImageRepository
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
+import java.net.URL
 
 class CreateCollectionFragment : Fragment() {
 
@@ -54,6 +62,9 @@ class CreateCollectionFragment : Fragment() {
         }
     }
 
+    private var suppress = false
+    private var lastRequestId = 0
+    private var debounceJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -89,6 +100,28 @@ class CreateCollectionFragment : Fragment() {
     }
 
     private fun setupListeners() {
+
+        binding.textFieldUrlImage.setOnTextChanged { text ->
+            if (suppress) return@setOnTextChanged
+
+            debounceJob?.cancel()
+            debounceJob = lifecycleScope.launch {
+                delay(500)
+                setupImageUrlValidation(text)
+            }
+        }
+        binding.textFieldUrlImage.setOnIconEndClickListener {
+            val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = clipboard.primaryClip
+            val item = clip?.getItemAt(0)
+            val text = item?.text?.toString()
+
+            if (text != null) {
+                binding.textFieldUrlImage.text = text
+                setupImageUrlValidation(text)
+            }
+        }
+
         binding.textFieldTitle.setOnTextChanged {
             viewModel.onTitleChanged(it)
             viewModel.clearError()
@@ -108,6 +141,8 @@ class CreateCollectionFragment : Fragment() {
                 putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
             }
 
+            clearErrorWhenPickImage()
+
             pickImage.launch(chooser)
         }
 
@@ -115,8 +150,9 @@ class CreateCollectionFragment : Fragment() {
             clearFocusAndHideKeyboard()
             renderError(viewModel.uiState.value)
             viewModel.onSaveClicked()
-
         }
+
+
     }
 
     private fun setupCategoryDropdown() {
@@ -153,6 +189,27 @@ class CreateCollectionFragment : Fragment() {
         binding.dropdownSelectorCategory.setAdapter(adapter)
     }
 
+
+    private fun setupImageUrlValidation(url: String) {
+        val requestId = ++lastRequestId
+
+        lifecycleScope.launch {
+            val isValid = validateImageUrlRemote(url)
+
+            if (requestId != lastRequestId) return@launch
+
+            if (!isValid) {
+                binding.textFieldUrlImage.isActivated = true
+                binding.textFieldUrlImage.errorText = "URL inválida"
+                viewModel.setImageNone()
+            } else {
+                binding.textFieldUrlImage.isActivated = false
+                binding.textFieldUrlImage.errorText = null
+                viewModel.setImageRemote(url)
+            }
+        }
+    }
+
     private fun setupKeyboardDismiss() {
         binding.root.setOnClickListener { view ->
             clearFocusAndHideKeyboard()
@@ -166,10 +223,16 @@ class CreateCollectionFragment : Fragment() {
         renderError(state)
 
         when (val img = state.image) {
-            is ImageSource.Local -> binding.imagePicker.showImage(img.path.toUri())
+            is ImageSource.Local -> {
+                binding.imagePicker.showImage(img.path.toUri())
+                binding.textFieldUrlImage.isActivated = false
+                binding.textFieldUrlImage.errorText = null
+                binding.textFieldUrlImage.clearFocus()
+                clearTextSilently()
+                clearErrorWhenPickImage()
+            }
             is ImageSource.Remote -> binding.imagePicker.showImage(img.url.toUri())
             ImageSource.None -> binding.imagePicker.showPlaceholder()
-
         }
 
         if (state.success) {
@@ -181,6 +244,7 @@ class CreateCollectionFragment : Fragment() {
         when (state.fieldError) {
             FieldError.Title -> showFieldError(state.errorMessage?: return, binding.textFieldTitle)
             FieldError.Category -> showFieldError(state.errorMessage ?: return, binding.textFieldSelectorCategory)
+            FieldError.ImageUrl -> showFieldError(state.errorMessage ?: return, binding.textFieldUrlImage)
             null -> Unit
         }
     }
@@ -207,4 +271,33 @@ class CreateCollectionFragment : Fragment() {
         binding.dropdownSelectorCategory.error = null
     }
 
+    private suspend fun validateImageUrlRemote(url: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val conn = URL(url).openConnection() as HttpURLConnection
+                conn.requestMethod = "HEAD"
+                conn.connectTimeout = 4000
+                conn.readTimeout = 400
+                conn.connect()
+                val type = conn.contentType ?: return@withContext false
+                type.startsWith("image/")
+            } catch(_: Exception) {
+                false
+            }
+        }
+    }
+
+    private fun clearErrorWhenPickImage() {
+        val state = viewModel.uiState.value
+
+        if (state.fieldError != null && state.fieldError is FieldError.ImageUrl) {
+            viewModel.clearError()
+        }
+    }
+
+    private fun clearTextSilently() {
+        suppress = true
+        binding.textFieldUrlImage.text = ""
+        suppress = false
+    }
 }

@@ -1,6 +1,7 @@
 package com.diogo.mycollection.ui.createcollection
 
 import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.diogo.mycollection.data.model.CategoryType
@@ -44,12 +45,17 @@ class CreateCollectionViewModel(
         _uiState.update { it.copy(image = ImageSource.Local(uri.toString())) }
     }
 
+    fun setImageRemote(url: String) {
+        _uiState.update { it.copy(image = ImageSource.Remote(url)) }
+    }
+
+    fun setImageNone() {
+        _uiState.update { it.copy(image = ImageSource.None) }
+    }
+
     fun onSaveClicked() {
 
-        println("On error clicked")
         val error = validate(_uiState.value)
-
-        println("Error: $error")
 
         if (error != null) {
             _uiState.update { it.copy(
@@ -77,6 +83,14 @@ class CreateCollectionViewModel(
             return FieldError.Category to "Categoria é obrigatória"
         }
 
+        if (state.image is ImageSource.Remote) {
+            val remote = state.image
+
+            if (!validateImageUrl(remote.url)) {
+                return FieldError.ImageUrl to "URL inválida"
+            }
+        }
+
         return null
     }
 
@@ -99,5 +113,23 @@ class CreateCollectionViewModel(
         type = state.categoryType!!,
         rating = state.rating
     )
+
+    private fun validateImageUrl(url: String): Boolean {
+        if (url.isBlank()) return false
+
+        val parsed = runCatching { url.toUri() }.getOrNull() ?: return false
+
+        if (parsed.scheme.isNullOrBlank()) return false
+        if (parsed.host.isNullOrBlank()) return false
+
+        val lowered = url.lowercase()
+        if (!lowered.startsWith("http://") && !lowered.startsWith("https://")) return false
+
+        return lowered.endsWith(".jpg") ||
+                lowered.endsWith(".jpeg") ||
+                lowered.endsWith(".png") ||
+                lowered.endsWith(".gif") ||
+                lowered.endsWith(".webp")
+    }
 
 }
