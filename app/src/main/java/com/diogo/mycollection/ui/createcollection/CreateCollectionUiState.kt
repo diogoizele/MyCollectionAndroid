@@ -8,11 +8,10 @@ data class CreateCollectionUiState (
     val categoryType: CategoryType? = null,
     val author: String = "",
     val image: ImageSource = ImageSource.None,
+    val isImageUrlValid: Boolean = true,
     val rating: Float = 1f,
     val description: String = "",
     val isSaveEnabled: Boolean = false,
-    val isSaving: Boolean = false,
     val fieldError: FieldError? = null,
     val errorMessage: String? = null,
-    val success: Boolean = false
 )

@@ -1,25 +1,61 @@
 package com.diogo.mycollection.ui.createcollection
 
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.diogo.mycollection.core.network.RemoteImageValidator
 import com.diogo.mycollection.data.model.CategoryType
 import com.diogo.mycollection.data.model.CollectionItem
 import com.diogo.mycollection.data.model.ImageSource
 import com.diogo.mycollection.data.repository.CollectionRepository
+import com.diogo.mycollection.data.repository.ImageRepository
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
+@OptIn(FlowPreview::class)
 class CreateCollectionViewModel(
-    private val repository: CollectionRepository
+    private val repository: CollectionRepository,
+    private val imageRepository: ImageRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateCollectionUiState())
     val uiState: StateFlow<CreateCollectionUiState> = _uiState
+
+    private val _events = MutableSharedFlow<CreateCollectionEvent>()
+    val events = _events
+
+    init {
+        observeRemoteUrlValidation()
+    }
+
+    private fun observeRemoteUrlValidation() {
+        viewModelScope.launch {
+            uiState
+                .map { it.image }
+                .filterIsInstance<ImageSource.Remote>()
+                .debounce(500)
+                .distinctUntilChanged()
+                .collect { image ->
+                    val isValid = RemoteImageValidator.isValidImageUrl(image.url)
+                    _uiState.update { it.copy(isImageUrlValid = isValid) }
+                }
+        }
+    }
+
+    fun onImageUrlChanged(value: String) {
+        _uiState.update { it.copy(image = ImageSource.Remote(value)) }
+    }
 
     fun onTitleChanged(value: String) {
         _uiState.update { it.copy(title = value) }
@@ -39,6 +75,13 @@ class CreateCollectionViewModel(
 
     fun onRatingChanged(value: Float) {
         _uiState.update { it.copy(rating = value) }
+    }
+
+    fun onImagePicked(bitmap: Bitmap) {
+        viewModelScope.launch {
+            val uri = imageRepository.save(bitmap)
+            onImageSelected(uri)
+        }
     }
 
     fun onImageSelected(uri: Uri) {
@@ -65,9 +108,7 @@ class CreateCollectionViewModel(
             return
         }
 
-        viewModelScope.launch {
-            save(_uiState.value)
-        }
+        save(_uiState.value)
     }
 
     fun clearError() {
@@ -95,13 +136,19 @@ class CreateCollectionViewModel(
     }
 
 
-    private suspend fun save(state: CreateCollectionUiState) {
-        _uiState.update { it.copy(isSaving = true, errorMessage = null) }
+    private fun save(state: CreateCollectionUiState) {
+        viewModelScope.launch {
+            _events.emit(CreateCollectionEvent.Loading)
 
-        val item = toDomain(state)
-        repository.save(item)
-
-        _uiState.update { it.copy(isSaving = false, success = true) }
+            runCatching {
+                val collection = toDomain(state)
+                repository.save(collection)
+            }.onSuccess {
+                _events.emit(CreateCollectionEvent.Success)
+            }.onFailure { e ->
+                _events.emit(CreateCollectionEvent.Error(e.message ?: "Erro desconhecido"))
+            }
+        }
     }
 
     private fun toDomain(state: CreateCollectionUiState): CollectionItem = CollectionItem(

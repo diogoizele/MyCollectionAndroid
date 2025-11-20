@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.diogo.mycollection.core.extensions.clearFocusAndHideKeyboard
@@ -20,23 +21,21 @@ import com.diogo.mycollection.data.model.ImageSource
 import com.diogo.mycollection.data.source.local.InMemoryCollectionRepository
 import com.diogo.mycollection.databinding.FragmentCreateCollectionBinding
 import androidx.core.net.toUri
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.diogo.mycollection.core.components.LabeledEditText
-import com.diogo.mycollection.data.repository.ImageRepository
+import com.diogo.mycollection.core.network.RemoteImageValidator
 import com.diogo.mycollection.data.source.local.InMemoryImageRepository
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.net.HttpURLConnection
-import java.net.URL
 
 class CreateCollectionFragment : Fragment() {
 
     private lateinit var viewModel: CreateCollectionViewModel
-    private lateinit var imageRepository: ImageRepository
+
 
     private var _binding: FragmentCreateCollectionBinding? = null
     private val binding get() = _binding!!
@@ -56,15 +55,13 @@ class CreateCollectionFragment : Fragment() {
 
         val cameraBitmap = data?.extras?.get("data") as? Bitmap
         if (cameraBitmap != null) {
-            val uri = imageRepository.save(cameraBitmap)
-            viewModel.onImageSelected(uri)
+            viewModel.onImagePicked(cameraBitmap)
             return@registerForActivityResult
         }
     }
 
     private var suppress = false
     private var lastRequestId = 0
-    private var debounceJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,9 +70,10 @@ class CreateCollectionFragment : Fragment() {
 
         _binding = FragmentCreateCollectionBinding.inflate(inflater, container, false)
 
-        viewModel = CreateCollectionViewModel(repository = InMemoryCollectionRepository())
-
-        imageRepository = InMemoryImageRepository(requireContext())
+        viewModel = CreateCollectionViewModel(
+            repository = InMemoryCollectionRepository(),
+            imageRepository = InMemoryImageRepository(requireContext())
+        )
 
         val root = binding.root
 
@@ -91,6 +89,7 @@ class CreateCollectionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupListeners()
+        setupEvents()
         setupCategoryDropdown()
         setupKeyboardDismiss()
 
@@ -101,14 +100,9 @@ class CreateCollectionFragment : Fragment() {
 
     private fun setupListeners() {
 
-        binding.textFieldUrlImage.setOnTextChanged { text ->
+        binding.textFieldUrlImage.setOnTextChanged {
             if (suppress) return@setOnTextChanged
-
-            debounceJob?.cancel()
-            debounceJob = lifecycleScope.launch {
-                delay(500)
-                setupImageUrlValidation(text)
-            }
+            viewModel.onImageUrlChanged(it)
         }
         binding.textFieldUrlImage.setOnIconEndClickListener {
             val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -152,7 +146,39 @@ class CreateCollectionFragment : Fragment() {
             viewModel.onSaveClicked()
         }
 
+        binding.ratingView.setOnRatingChangeListener {
+            viewModel.onRatingChanged(it)
+        }
 
+        binding.textFieldAuthor.setOnTextChanged {
+            viewModel.onAuthorChanged(it)
+        }
+
+        binding.textFieldDescription.addTextChangedListener {
+            viewModel.onDescriptionChanged(it.toString())
+        }
+    }
+
+    private fun setupEvents() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    when(event) {
+                        is CreateCollectionEvent.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
+                        is CreateCollectionEvent.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            findNavController().popBackStack()
+                        }
+                        is CreateCollectionEvent.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(requireContext(), event.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setupCategoryDropdown() {
@@ -194,7 +220,7 @@ class CreateCollectionFragment : Fragment() {
         val requestId = ++lastRequestId
 
         lifecycleScope.launch {
-            val isValid = validateImageUrlRemote(url)
+            val isValid = RemoteImageValidator.isValidImageUrl(url)
 
             if (requestId != lastRequestId) return@launch
 
@@ -217,7 +243,6 @@ class CreateCollectionFragment : Fragment() {
     }
 
     private fun render(state: CreateCollectionUiState) {
-        binding.progressBar.visibility = if (state.isSaving) View.VISIBLE else View.GONE
 
         resetAllErrors()
         renderError(state)
@@ -233,10 +258,6 @@ class CreateCollectionFragment : Fragment() {
             }
             is ImageSource.Remote -> binding.imagePicker.showImage(img.url.toUri())
             ImageSource.None -> binding.imagePicker.showPlaceholder()
-        }
-
-        if (state.success) {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -271,21 +292,7 @@ class CreateCollectionFragment : Fragment() {
         binding.dropdownSelectorCategory.error = null
     }
 
-    private suspend fun validateImageUrlRemote(url: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val conn = URL(url).openConnection() as HttpURLConnection
-                conn.requestMethod = "HEAD"
-                conn.connectTimeout = 4000
-                conn.readTimeout = 400
-                conn.connect()
-                val type = conn.contentType ?: return@withContext false
-                type.startsWith("image/")
-            } catch(_: Exception) {
-                false
-            }
-        }
-    }
+
 
     private fun clearErrorWhenPickImage() {
         val state = viewModel.uiState.value

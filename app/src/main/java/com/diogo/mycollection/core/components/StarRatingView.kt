@@ -30,6 +30,8 @@ class StarRatingView @JvmOverloads constructor(
 
     private val starBounds = Rect()
 
+    private var onRatingChange: ((Float) -> Unit)? = null
+
     init {
         attrs?.let {
             val a = context.obtainStyledAttributes(it, R.styleable.StarRatingView, 0, 0)
@@ -111,7 +113,9 @@ class StarRatingView @JvmOverloads constructor(
                 if (newRating != rating) {
                     rating = newRating
                     invalidate()
-                    listener?.onRatingChange(rating)
+                    onRatingChange?.let {
+                        it(rating)
+                    }
                 }
             }
             MotionEvent.ACTION_UP -> performClick()
@@ -123,8 +127,7 @@ class StarRatingView @JvmOverloads constructor(
         return super.performClick()
     }
 
-    // API pública
-    fun setRating(value: Float) {
+   fun setRating(value: Float) {
         val v = value.coerceIn(1f, maxRating.toFloat())
         rating = ((v / step).roundToInt() * step).coerceIn(1f, maxRating.toFloat())
         invalidate()
@@ -132,9 +135,9 @@ class StarRatingView @JvmOverloads constructor(
 
     fun getRating(): Float = rating
 
-    interface RatingChangeListener { fun onRatingChange(newRating: Float) }
-    private var listener: RatingChangeListener? = null
-    fun setOnRatingChangeListener(l: RatingChangeListener) { listener = l }
+    fun setOnRatingChangeListener(listener: (Float) -> Unit) {
+        onRatingChange = listener
+    }
 
     private fun dpToPx(dp: Float): Float = dp * context.resources.displayMetrics.density
 }
