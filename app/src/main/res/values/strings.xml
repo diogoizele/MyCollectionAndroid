@@ -37,4 +37,8 @@
     <string name="label_rating">Avaliação</string>
     <string name="placeholder_rating">Toque nas estrelas para avaliar</string>
     <string name="add_item_btn_text">Adicionar à Coleção</string>
+    <string name="home_empty_state_title">Nenhum item encontrado</string>
+    <string name="home_empty_state_description">Adicione seu primeiro item para começar</string>
+    <string name="home_empty_state_btn">Cadastrar novo</string>
+    <string name="empty_image_description_text">Imagem de uma caixa representando a ausência de itens na coleção</string>
 </resources>

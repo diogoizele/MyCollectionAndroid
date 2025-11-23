@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.diogo.mycollection.data.repository.AuthRepository
 import com.diogo.mycollection.data.repository.CollectionRepository
 import com.diogo.mycollection.data.repository.ImageRepository
+import com.diogo.mycollection.data.source.image.AndroidImageLoader
+import com.diogo.mycollection.data.source.image.ImageLoader
 import com.diogo.mycollection.data.source.local.AppDatabase
 import com.diogo.mycollection.data.source.local.InMemoryAuthRepository
 import com.diogo.mycollection.data.source.local.InMemoryCollectionRepository
@@ -51,4 +53,8 @@ object DataModule {
     @Provides
     @Singleton
     fun provideImageRepository(@ApplicationContext context: Context): ImageRepository = InMemoryImageRepository(context)
+
+    @Provides
+    @Singleton
+    fun provideImageLoader(@ApplicationContext context: Context): ImageLoader = AndroidImageLoader(context)
 }

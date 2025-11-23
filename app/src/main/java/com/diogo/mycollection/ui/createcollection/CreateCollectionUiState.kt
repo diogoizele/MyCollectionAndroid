@@ -10,7 +10,7 @@ data class CreateCollectionUiState (
     val author: String = "",
     val image: ImageSource = ImageSource.None,
     val isImageUrlValid: Boolean = true,
-    val rating: Float = StarRatingView.DEFAULT_VALUE,
+    val rating: Float = 1f,
     val description: String = "",
     val isSaveEnabled: Boolean = false,
     val fieldError: FieldError? = null,

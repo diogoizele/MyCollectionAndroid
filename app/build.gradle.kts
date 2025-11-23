@@ -62,7 +62,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation("androidx.core:core-splashscreen:1.2.0")
-    implementation("io.coil-kt:coil:2.6.0")
 
     val roomVersion = "2.6.1"
 

@@ -18,7 +18,6 @@ import com.diogo.mycollection.core.extensions.clearFocusAndHideKeyboard
 import com.diogo.mycollection.core.extensions.toDisplayName
 import com.diogo.mycollection.data.model.CategoryType
 import com.diogo.mycollection.data.model.ImageSource
-import com.diogo.mycollection.data.source.local.InMemoryCollectionRepository
 import com.diogo.mycollection.databinding.FragmentCreateCollectionBinding
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
@@ -29,7 +28,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.diogo.mycollection.core.components.LabeledEditText
 import com.diogo.mycollection.core.network.RemoteImageValidator
-import com.diogo.mycollection.data.source.local.InMemoryImageRepository
 import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -38,7 +36,6 @@ import kotlinx.coroutines.launch
 class CreateCollectionFragment : Fragment() {
 
     private val viewModel: CreateCollectionViewModel by viewModels()
-
 
     private var _binding: FragmentCreateCollectionBinding? = null
     private val binding get() = _binding!!
@@ -180,12 +177,7 @@ class CreateCollectionFragment : Fragment() {
     }
 
     private fun setupCategoryDropdown() {
-        val items = listOf(
-            CategoryType.GAME.toDisplayName(requireContext()),
-            CategoryType.MOVIE.toDisplayName(requireContext()),
-            CategoryType.BOOK.toDisplayName(requireContext()),
-            CategoryType.ALBUM.toDisplayName(requireContext())
-        )
+        val items = CategoryType.entries.map { it.toDisplayName(requireContext()) }
 
         val adapter = ArrayAdapter(
             requireContext(),

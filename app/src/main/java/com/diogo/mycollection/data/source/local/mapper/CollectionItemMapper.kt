@@ -11,7 +11,7 @@ fun CollectionItemEntity.toDomain(): CollectionItem {
         author = author,
         type = type,
         rating = rating,
-        imageUrl = imageUrl,
+        image = imageUrl,
         description = description
     )
 }
@@ -24,6 +24,6 @@ fun CollectionItem.toEntity(): CollectionItemEntity {
         type = type,
         rating = rating,
         description = description,
-        imageUrl = imageUrl
+        imageUrl = image
     )
 }

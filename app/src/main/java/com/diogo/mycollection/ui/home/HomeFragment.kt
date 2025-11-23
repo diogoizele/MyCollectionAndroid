@@ -66,6 +66,11 @@ class HomeFragment : Fragment() {
         binding.newItemFabButton.setOnClickListener {
             findNavController().navigate(R.id.navigation_create_collection)
         }
+
+        binding.emptyButton.setOnClickListener {
+            findNavController().navigate(R.id.navigation_create_collection)
+        }
+
     }
 
     private fun setupRecyclerCollectionView(collections: List<CollectionItem>) {
@@ -122,22 +127,59 @@ class HomeFragment : Fragment() {
     }
 
     private fun showLoading() {
-        println("Loading chamado as ${System.currentTimeMillis()}")
+        binding.recyclerViewCollections.visibility = View.GONE
+        binding.emptyStateContainer.visibility = View.GONE
     }
+
     private fun showItems(items: List<CollectionItem>) {
+        binding.emptyStateContainer.visibility = View.GONE
+        binding.recyclerViewCollections.visibility = View.VISIBLE
+
         setCategoryCounters(items)
         setupRecyclerCollectionView(items)
-        println("Items chamados as $items")
     }
 
-
     private fun showError(message: String) {
-        println("Error chamado as ${System.currentTimeMillis()}")
+        binding.recyclerViewCollections.visibility = View.GONE
+        binding.emptyStateContainer.visibility = View.VISIBLE
+
+        binding.emptyTitle.text = "Erro ao carregar"
+        binding.emptySubtitle.text = message
+        binding.emptyButton.visibility = View.GONE
     }
 
     private fun showEmptyState() {
-        println("Empty chamado as ${System.currentTimeMillis()}")
+        binding.recyclerViewCollections.visibility = View.GONE
+        binding.emptyStateContainer.visibility = View.VISIBLE
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.selectedCategory.collect { category ->
+                    when(category) {
+                        CategoryType.BOOK -> {
+                            binding.emptyTitle.text = "Nenhum livro encontrado"
+                            binding.emptySubtitle.text = "Adicione um livro para começar"
+                        }
+                        CategoryType.MOVIE -> {
+                            binding.emptyTitle.text = "Nenhum filme encontrado"
+                            binding.emptySubtitle.text = "Adicione um filme para começar"
+                        }
+                        CategoryType.GAME -> {
+                            binding.emptyTitle.text = "Nenhum jogo encontrado"
+                            binding.emptySubtitle.text = "Adicione um jogo para começar"
+                        }
+                        else -> {
+                            binding.emptyTitle.text = "Nenhum item encontrado"
+                            binding.emptySubtitle.text = "Adicione um item para começar"
+                        }
+                    }
+                }
+            }
+        }
+
+        binding.emptyButton.visibility = View.VISIBLE
     }
+
 
     private fun setCategoryCounters(items: List<CollectionItem>) {
         var booksQuantity = 0

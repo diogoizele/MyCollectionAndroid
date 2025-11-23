@@ -1,11 +1,11 @@
 package com.diogo.mycollection.ui.home.adapters
 
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import com.diogo.mycollection.R
 import com.diogo.mycollection.data.model.CollectionItem
 import com.diogo.mycollection.databinding.ItemCollectionHomeBinding
 import com.diogo.mycollection.core.extensions.toDisplayName
@@ -37,20 +37,28 @@ class CollectionAdapter(
     ) {
         val item = items[position]
         with(holder.binding) {
+            println("item: $item")
+
             itemTitle.text = item.title
-            itemAuthor.text = item.author
+
+            if (item.author.isNullOrBlank()) {
+                itemAuthor.visibility = View.GONE
+            } else {
+                itemAuthor.text = item.author
+                itemAuthor.visibility = View.VISIBLE
+            }
             itemTag.text = item.type.toDisplayName(root.context)
             itemRating.text = item.rating.toString()
 
-            if (item.imageUrl != null) {
+            if (item.image != null) {
                 itemImage.visibility = View.VISIBLE
                 itemPlaceholderText.visibility = View.GONE
 
-                itemImage.load(item.imageUrl) {
-                    crossfade(true)
-                    placeholder(R.drawable.bg_image_placeholder)
-                    error(R.drawable.bg_image_placeholder)
-                }
+                val base64 = item.image.substringAfter(",")
+                val bytes = Base64.decode(base64, Base64.DEFAULT)
+                val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+
+                itemImage.setImageBitmap(bitmap)
             } else {
                 itemImage.visibility = View.GONE
                 itemPlaceholderText.visibility = View.VISIBLE

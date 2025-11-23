@@ -31,8 +31,14 @@ class HomeViewModel @Inject constructor(
             items.filter { it.type == cat }
         } ?: items
 
-        if (filtered.isEmpty()) HomeUiState.Empty
-        else HomeUiState.Success(filtered)
+
+        println("Items: $filtered")
+        if (filtered.isEmpty()) {
+            HomeUiState.Empty
+        }
+        else {
+            HomeUiState.Success(filtered)
+        }
     }
     .catch { error ->
         emit(HomeUiState.Error(error.message ?: "Unknown error"))

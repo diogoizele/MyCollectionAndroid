@@ -8,6 +8,6 @@ data class CollectionItem(
     val author: String?,
     val type: CategoryType,
     val rating: Float?,
-    val imageUrl: String?,
+    val image: String?,
     val description: String? = null,
 )

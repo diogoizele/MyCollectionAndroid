@@ -11,6 +11,7 @@ import com.diogo.mycollection.data.model.CollectionItem
 import com.diogo.mycollection.data.model.ImageSource
 import com.diogo.mycollection.data.repository.CollectionRepository
 import com.diogo.mycollection.data.repository.ImageRepository
+import com.diogo.mycollection.data.source.image.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,7 +30,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateCollectionViewModel @Inject constructor(
     private val repository: CollectionRepository,
-    private val imageRepository: ImageRepository
+    private val imageRepository: ImageRepository,
+    private val imageLoader: ImageLoader
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateCollectionUiState())
@@ -154,20 +156,15 @@ class CreateCollectionViewModel @Inject constructor(
         }
     }
 
-    private fun toDomain(state: CreateCollectionUiState): CollectionItem {
-        val source = when(state.image) {
-            is ImageSource.Local -> state.image.path
-            is ImageSource.Remote -> state.image.url
-            else -> null
-        }
-        // TODO: Converter pra base64
+    private suspend fun toDomain(state: CreateCollectionUiState): CollectionItem {
+        val base64Image = imageLoader.loadAsBase64(state.image)
 
         return CollectionItem(
             id = UUID.randomUUID(),
             title = state.title,
-            author = state.author,
-            description = state.description,
-            imageUrl = source,
+            author = state.author.ifBlank { null },
+            description = state.description.ifBlank { null },
+            image = base64Image?.ifBlank { null },
             type = state.categoryType!!,
             rating = state.rating
         )
